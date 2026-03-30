@@ -1,0 +1,7 @@
+npx create-next-app@latest frontend
+npx shadcn@latest add login-02
+npm install next-auth
+npx shadcn@latest add sidebar-07
+npx shadcn@latest add button
+npx shadcn@latest add input
+npx shadcn@latest add field
