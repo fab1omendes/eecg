@@ -5,3 +5,7 @@ npx shadcn@latest add sidebar-07
 npx shadcn@latest add button
 npx shadcn@latest add input
 npx shadcn@latest add field
+npx shadcn@latest add signup-01
+npx shadcn@latest add combobox
+npx shadcn@latest add popover
+npx shadcn@latest add calendar

@@ -58,7 +58,7 @@ export default function Page() {
             <div className="aspect-video rounded-xl bg-muted/50" /> */}
           </div>
           <div className="min-h-screen flex-1 rounded-xl bg-muted/50 md:min-h-min">
-            <div className="w-full max-w-md">
+            <div className="w-full max-w-md p-6">
               <form>
                 <FieldGroup>
                   <FieldSet>
