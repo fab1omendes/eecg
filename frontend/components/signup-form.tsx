@@ -1,5 +1,8 @@
 "use client";
 import * as React from "react";
+import { useSearchParams } from 'next/navigation';
+import { useSignup } from "@/hooks/use-signup";
+
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -29,6 +32,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+
 
 const professions = [
   "Médico",
@@ -39,9 +44,24 @@ const professions = [
   "Nenhuma das opções anteriores",
 ] as const;
 
+
 export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
   const [open, setOpen] = React.useState(false);
   const [date, setDate] = React.useState<Date | undefined>(undefined);
+  // Hook de signup
+  const { handleSubmit, loading } = useSignup();
+
+  const searchParams = useSearchParams();
+  const defaultName = searchParams.get('name');
+  const defaultEmail = searchParams.get('email');
+  const defaultImage = searchParams.get('image');
+
+  // Criamos este wrapper local apenas para injetar o "date" (que é um state) pra dentro do helper do form
+  const onSubmitWrapper = (e: React.FormEvent<HTMLFormElement>) => {
+    handleSubmit(e, {
+      date: date
+    });
+  };
 
   return (
     <Card {...props}>
@@ -52,15 +72,25 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form>
+        <form onSubmit={onSubmitWrapper}>
           <FieldGroup>
+
+            {/* Imagem */}
+
+            <Avatar className="mx-auto w-20 h-20">
+              <AvatarImage src={defaultImage || undefined} />
+              <AvatarFallback>{defaultName?.charAt(0).toUpperCase()}</AvatarFallback>
+            </Avatar>
+
             {/* Nome */}
             <Field>
               <FieldLabel htmlFor="name">Nome</FieldLabel>
               <Input
                 id="name"
+                name="name"
                 type="text"
                 placeholder="Maria da Silva"
+                defaultValue={defaultName || ""}
                 required
               />
             </Field>
@@ -75,7 +105,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                     id="date"
                     className="justify-start font-normal"
                   >
-                    {date ? date.toLocaleDateString() : "Select date"}
+                    {date ? date.toLocaleDateString() : "Selecione a data"}
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent
@@ -101,15 +131,17 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
               <FieldLabel htmlFor="email">Email</FieldLabel>
               <Input
                 id="email"
+                name="email"
                 type="email"
                 placeholder="nome@gmail.com"
+                defaultValue={defaultEmail || ""}
                 required
               />
             </Field>
             {/* Senha */}
             <Field>
               <FieldLabel htmlFor="password">Senha</FieldLabel>
-              <Input id="password" type="password" required />
+              <Input id="password" name="password" type="password" required />
               <FieldDescription>
                 Deve ter pelo menos 8 caracteres.
               </FieldDescription>
@@ -120,6 +152,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
               </FieldLabel>
               <Input
                 id="confirm-password"
+                name="confirm-password"
                 type="password"
                 placeholder="Por favor, confirme a sua senha."
                 required
@@ -129,7 +162,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
             {/* Profissão */}
             <Field>
               <FieldLabel htmlFor="profession">Profissão</FieldLabel>
-              <Combobox items={professions}>
+              <Combobox items={professions || []}>
                 <ComboboxInput placeholder="Selecione uma profissão" />
                 <ComboboxContent>
                   <ComboboxEmpty>Nenhum item encontrado.</ComboboxEmpty>
@@ -156,9 +189,11 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
 
             <FieldGroup>
               <Field>
-                <Button type="submit">Criar Conta</Button>
+                <Button type="submit" disabled={loading}>
+                  {loading ? "Criando Conta..." : "Criar Conta"}
+                </Button>
                 <FieldDescription className="px-6 text-center">
-                  Você já tem uma conta? <a href="#">Acesse aqui</a>
+                  Você já tem uma conta? <a href="/login">Acesse aqui</a>
                 </FieldDescription>
               </Field>
             </FieldGroup>

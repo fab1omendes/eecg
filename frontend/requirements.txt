@@ -9,3 +9,4 @@ npx shadcn@latest add signup-01
 npx shadcn@latest add combobox
 npx shadcn@latest add popover
 npx shadcn@latest add calendar
+npx shadcn@latest add avatar

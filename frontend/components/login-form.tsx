@@ -19,22 +19,30 @@ export function LoginForm({
 }: React.ComponentProps<"form">) {
   const [loading, setLoading] = useState(false);
 
+  // 2. Estado para guardar resposta do backend
+  const [errorMsg, setErrorMsg] = useState("");
+
+
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-
+    setLoading(true);
+    setErrorMsg(""); // Zera na tentativa seguinte
     const formData = new FormData(e.currentTarget);
-
     const email = formData.get("email");
     const password = formData.get("password");
-
-    setLoading(true);
-
-    await signIn("credentials", {
+    const res = await signIn("credentials", {
       email,
       password,
-      callbackUrl: "/dashboard",
+      redirect: false, // Isso impede que ele mude a URL pra api/auth/error e te devolve controle!
     });
-
+    // Inspecione o retorno!
+    if (res?.error) {
+      // A string "error" contida aqui carregará o 'Senha ou email incorretos.' do arquivo route.js
+      setErrorMsg(res.error);
+    } else if (res?.ok) {
+      // Já que desligamos o redirecionamento automático, fomos nós que precisamos fazer o "push" agora:
+      window.location.href = "/sample";
+    }
     setLoading(false);
   }
 
@@ -85,6 +93,13 @@ export function LoginForm({
             className="bg-background"
           />
         </Field>
+
+        {/* Adicione a mensagem de erro acima ou abaixo do campo de email! */}
+        {errorMsg && (
+          <div className="rounded bg-destructive/10 p-3 text-center text-sm text-destructive">
+            {errorMsg}
+          </div>
+        )}
 
         {/* login normal */}
         <Field>

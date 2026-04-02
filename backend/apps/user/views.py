@@ -1,0 +1,38 @@
+from rest_framework import viewsets
+from .models import User
+from .serializers import UserSerializer
+from rest_framework.response import Response
+from rest_framework import status
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+    def check_email(self, request):
+        email = request.query_params.get('email')
+        if User.objects.filter(email=email).exists():
+            return Response({'exists': True})
+        return Response({'exists': False})     
+    
+    def signup(self, request):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def auth(self, request):
+        email = request.data.get('email')
+        password = request.data.get('password')
+        user = User.objects.filter(email=email).first()
+        if user and user.check_password(password):
+            # Se deu Acerto, retorne os dados dele com Status 200 (o NextAuth precisa disso)
+            return Response({
+                'id': user.id,
+                'email': user.email,
+                'name': user.first_name, # Ou username, nome, etc
+            }, status=status.HTTP_200_OK)
+
+        # Se deu Falha, solte Explicitamente um Status 401 Não Autorizado!
+        return Response({'detail': 'Senha ou email incorretos.'},
+status=status.HTTP_401_UNAUTHORIZED)
