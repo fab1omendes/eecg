@@ -12,13 +12,22 @@ export function useSignup() {
     const formData = new FormData(e.currentTarget);
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
-    
-    // Mesclamos os dados nativos do formulário com dados de estados de componentes avançados
+    const fullName = formData.get("name") as string;
+    const [firstName, ...lastNameParts] = fullName.split(' ');
+    const lastName = lastNameParts.join(' ');
+    const formattedBirthDate = customData?.birthDate ? customData.birthDate : null;
+
     const dataToSend = {
-      name: formData.get("name"),
+      username: email,
       email: email,
       password: password,
-      ...customData
+      first_name: firstName,
+      last_name: lastName,
+      name: fullName,
+      photo: formData.get("image") || null,
+      birth_date: formattedBirthDate,
+      profession: formData.get("profession") || "",
+      organization: formData.get("organization") || "",
     };
 
     try {

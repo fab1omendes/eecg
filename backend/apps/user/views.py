@@ -3,6 +3,7 @@ from .models import User
 from .serializers import UserSerializer
 from rest_framework.response import Response
 from rest_framework import status
+from django.contrib.auth.models import update_last_login
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
@@ -26,6 +27,9 @@ class UserViewSet(viewsets.ModelViewSet):
         password = request.data.get('password')
         user = User.objects.filter(email=email).first()
         if user and user.check_password(password):
+
+            update_last_login(None, user)
+
             # Se deu Acerto, retorne os dados dele com Status 200 (o NextAuth precisa disso)
             return Response({
                 'id': str(user.id), # convertendo para string para gerar o JWT de segurança

@@ -58,8 +58,9 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
 
   // Criamos este wrapper local apenas para injetar o "date" (que é um state) pra dentro do helper do form
   const onSubmitWrapper = (e: React.FormEvent<HTMLFormElement>) => {
+    const formattedDate = date ? date.toISOString().split('T')[0] : null;
     handleSubmit(e, {
-      date: date
+      birthDate: formattedDate
     });
   };
 
@@ -73,6 +74,9 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
       </CardHeader>
       <CardContent>
         <form onSubmit={onSubmitWrapper}>
+
+          <input type="hidden" name="image" value={defaultImage || ""} />
+
           <FieldGroup>
 
             {/* Imagem */}
@@ -162,7 +166,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
             {/* Profissão */}
             <Field>
               <FieldLabel htmlFor="profession">Profissão</FieldLabel>
-              <Combobox items={professions || []}>
+              <Combobox name="profession" items={professions || []}>
                 <ComboboxInput placeholder="Selecione uma profissão" />
                 <ComboboxContent>
                   <ComboboxEmpty>Nenhum item encontrado.</ComboboxEmpty>
@@ -182,6 +186,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
               <FieldLabel htmlFor="organization">Organização</FieldLabel>
               <Input
                 id="organization"
+                name="organization"
                 placeholder="Nome da empresa ou organização"
                 required
               />
