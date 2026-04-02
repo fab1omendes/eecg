@@ -47,6 +47,21 @@ export const authOptions = {
     signIn: "/login",
   },
   callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        // user é o objeto retornado no authorize()
+        const u = user as any;
+        token.accessToken = u.token || u.access || u.access_token;
+        token.id = u.id || u.user_id;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      // Repassa os dados persistidos no token JWT para a sessão do cliente
+      (session as any).accessToken = token.accessToken;
+      (session.user as any).id = token.id;
+      return session;
+    },
     async signIn({ user, account }) {
       if (account?.provider === "google") {
 
