@@ -6,8 +6,8 @@ export const authOptions = {
   providers: [
     // Login via Google
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      clientId: process.env.GOOGLE_CLIENT_ID || '',
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
     }),
     // Login via usuário e senha backend
     CredentialsProvider({
@@ -48,7 +48,7 @@ export const authOptions = {
   },
   callbacks: {
     async signIn({ user, account, profile }) {
-      if (account.provider === "google") {
+      if (account?.provider === "google") {
 
         try {
           // Verificar se a conta google já é cadastrada via fetch usando GET
@@ -58,8 +58,7 @@ export const authOptions = {
           //Se existir API devolve {"exists = true"}
 
           if (data.exists) {
-            // Se existir, redireciona para index
-            return "/sample";
+            return true;
           } else {
             // Se não existir, cria o usuário passando os dados via query params
             const urlParams = new URLSearchParams({

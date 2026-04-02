@@ -28,9 +28,9 @@ class UserViewSet(viewsets.ModelViewSet):
         if user and user.check_password(password):
             # Se deu Acerto, retorne os dados dele com Status 200 (o NextAuth precisa disso)
             return Response({
-                'id': user.id,
+                'id': str(user.id), # convertendo para string para gerar o JWT de segurança
                 'email': user.email,
-                'name': user.first_name, # Ou username, nome, etc
+                'name': user.first_name,
             }, status=status.HTTP_200_OK)
 
         # Se deu Falha, solte Explicitamente um Status 401 Não Autorizado!
