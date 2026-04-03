@@ -1,6 +1,8 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { JWT } from "next-auth/jwt";
+import { User } from "next-auth";
 
 export const authOptions = {
   providers: [
@@ -50,12 +52,15 @@ export const authOptions = {
     signIn: "/login",
   },
   callbacks: {
-    async jwt({ token, user }) {
+   async jwt({
+    token,
+    user,
+    }: {
+      token: JWT;
+      user?: User;
+    }): Promise<JWT> {
       if (user) {
-        // user é o objeto retornado no authorize()
-        const u = user as any;
-        token.accessToken = u.token || u.access || u.access_token;
-        token.id = u.id || u.user_id;
+        token.id = (user as any).id;
       }
       return token;
     },
