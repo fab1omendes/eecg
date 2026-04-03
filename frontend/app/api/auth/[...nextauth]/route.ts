@@ -36,9 +36,12 @@ export const authOptions = {
             const errorData = await res.json();
             throw new Error(errorData.detail || "Erro de login");
           }
-        } catch (e) {
-          // Repassa o erro exatamente como o backend devolveu para aparecer no Frontend
-          throw new Error(e.message);
+        }catch (e) {
+            if (e instanceof Error) {
+              throw new Error(e.message);
+            } else {
+              throw new Error("Erro desconhecido");
+        }
         }
       },
     }),
