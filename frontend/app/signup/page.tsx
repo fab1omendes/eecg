@@ -1,11 +1,19 @@
-import { SignupForm } from "@/components/signup-form"
+import { SignupForm } from "@/components/signup-form";
 
-export default function Page() {
+export default function Page({
+  searchParams,
+}: {
+  searchParams: {
+    name?: string;
+    email?: string;
+    image?: string;
+  };
+}) {
   return (
     <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
       <div className="w-full max-w-sm">
-        <SignupForm />
+        <SignupForm searchParams={searchParams} />
       </div>
     </div>
-  )
+  );
 }
