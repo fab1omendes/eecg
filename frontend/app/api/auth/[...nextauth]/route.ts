@@ -2,7 +2,7 @@ import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { JWT } from "next-auth/jwt";
-import { User } from "next-auth";
+import { User, Session, Account } from "next-auth";
 
 export const authOptions = {
   providers: [
@@ -38,12 +38,12 @@ export const authOptions = {
             const errorData = await res.json();
             throw new Error(errorData.detail || "Erro de login");
           }
-        }catch (e) {
-            if (e instanceof Error) {
-              throw new Error(e.message);
-            } else {
-              throw new Error("Erro desconhecido");
-        }
+        } catch (e) {
+          if (e instanceof Error) {
+            throw new Error(e.message);
+          } else {
+            throw new Error("Erro desconhecido");
+          }
         }
       },
     }),
@@ -52,25 +52,31 @@ export const authOptions = {
     signIn: "/login",
   },
   callbacks: {
-   async jwt({
-    token,
-    user,
+    async jwt({
+      token,
+      user,
     }: {
       token: JWT;
       user?: User;
     }): Promise<JWT> {
       if (user) {
         token.id = (user as any).id;
+        token.accessToken = (user as any).accessToken;
       }
       return token;
     },
-    async session({ session, token }) {
-      // Repassa os dados persistidos no token JWT para a sessão do cliente
+    async session({
+      session,
+      token,
+    }: {
+      session: Session;
+      token: JWT;
+    }) {
       (session as any).accessToken = token.accessToken;
       (session.user as any).id = token.id;
       return session;
     },
-    async signIn({ user, account }) {
+    async signIn({ user, account }: { user: User; account: Account | null }) {
       if (account?.provider === "google") {
 
         try {
