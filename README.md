@@ -27,18 +27,23 @@ apos clonar o repositorio
 acesse a pasta eecg/backend
 instale o ambiente virtual:
 python -m venv .venv
+
 ative a execucao de scripts na politica de execução:
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+
 acesse o ambiente virtual:
 .venv\Scripts\activate
+
 instale as dependencias:
 pip install -r requirements.txt
-rode o backend:
+
+rode a api do backend:
 python manage.py runserver
 
 Abra um novo terminal sem fechar o anterior
 
 acesse o frontend:
 cd ../frontend
+
 npm install
 npm run dev
