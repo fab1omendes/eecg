@@ -1,0 +1,25 @@
+django
+djangorestframework
+django-cors-headers
+python-dotenv
+psycopg2-binary
+gunicorn
+
+
+#python manage.py runserver
+
+#DROP SCHEMA public CASCADE;
+#CREATE SCHEMA public;
+#GRANT ALL ON SCHEMA public TO postgres;
+#GRANT ALL ON SCHEMA public TO public;
+
+
+#python manage.py migrate
+# # Apaga apenas os arquivos de migração problemáticos já criados no app user
+# rm -rf apps/user/migrations/0*.py
+# # Faz o mapeamento correto do seu User customizado como o n° 0001
+# python manage.py makemigrations user
+# python manage.py makemigrations
+# # Cria o banquinho novo do zero, mas dessa vez o seu User nascerá antes de tudo!
+# python manage.py migrate
+# python manage.py createsuperuser    
